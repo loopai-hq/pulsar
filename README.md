@@ -1,11 +1,11 @@
 <!-- Modified by Pulsar. (Splash's original README is docs/SPLASH-README.md.) -->
 <h1 align="center">Pulsar</h1>
 
-<h3 align="center">Qwen3.8-27B on your Mac: 153 tok/s writing code, 344 tok/s editing it.</h3>
+<h3 align="center">Qwen3.8-27B on your Mac: 156 tok/s writing code, 347 tok/s editing it.</h3>
 
 <p align="center"><b>The fastest engine we have measured for Qwen3.8-27B on Apple silicon (M5 Max)</b>, a fork of Inco AI's
 <a href="https://github.com/incoai/splash">Splash</a> 1.3.0.<br>
-Up to 477 tok/s editing code · 1.44× faster than lithos-metal 0.1.2 (official release) · 1.13× Splash 1.3.0<br>
+Up to 477 tok/s editing code · 1.42× faster than lithos-metal 0.1.2 (official release) · 1.13× Splash 1.3.0<br>
 every token still checked by the full model</p>
 
 <p align="center">
@@ -17,24 +17,24 @@ every token still checked by the full model</p>
 
 <div align="center">
 
-| **153 tok/s** | **344 tok/s** | **1.44×** | **0.1 s** |
+| **156 tok/s** | **347 tok/s** | **1.42×** | **0.1 s** |
 |:---:|:---:|:---:|:---:|
 | writing code, average | editing a pasted file, average | faster than lithos-metal 0.1.2 (official release) | to start a repeated prompt |
 
 </div>
 
-<p align="center"><a href="docs/media/lithos-tip.mp4"><img src="docs/media/lithos-tip.webp" width="720" alt="Pulsar 1.1.5 and lithos-metal 0.1.2 answer lithos-metal's launch-video prompt, a tip calculator, side by side on the same M5 Max. Pulsar writes 3,000 tokens in 19.7 s, lithos-metal in 25.3 s."></a><br>
-<sub><b>lithos-metal's own launch-video prompt, same Mac:</b> Pulsar 1.1.5 writes 3,000 tokens in 19.7 s
-(153 tok/s), lithos-metal 0.1.2 in 25.3 s (120 tok/s).
+<p align="center"><a href="docs/media/lithos-tip.mp4"><img src="docs/media/lithos-tip.webp" width="720" alt="Pulsar 1.1.7 and lithos-metal 0.1.2 answer lithos-metal's launch-video prompt, a tip calculator, side by side on the same M5 Max. Pulsar writes 3,000 tokens in 19.3 s, lithos-metal in 25.0 s."></a><br>
+<sub><b>lithos-metal's own launch-video prompt, same Mac:</b> Pulsar 1.1.7 writes 3,000 tokens in 19.3 s
+(156 tok/s), lithos-metal 0.1.2 in 25.0 s (123 tok/s).
 <a href="docs/media/lithos-tip.mp4">Video</a></sub></p>
 
-<p align="center"><a href="docs/media/lithos-edit.mp4"><img src="docs/media/lithos-edit.webp" width="720" alt="Pulsar 1.1.5 and lithos-metal 0.1.2 edit the same pasted 210-line Python file. Pulsar finishes in 7.3 s, lithos-metal in 16.1 s."></a><br>
-<sub><b>Editing a pasted 210-line file:</b> Pulsar 1.1.5 finishes its 1,894-token answer in 7.3 s (344 tok/s, up to
-477), lithos-metal 0.1.2 its 1,884 tokens in 16.1 s (151 tok/s). Pulsar takes most of this answer straight from the
+<p align="center"><a href="docs/media/lithos-edit.mp4"><img src="docs/media/lithos-edit.webp" width="720" alt="Pulsar 1.1.7 and lithos-metal 0.1.2 edit the same pasted 210-line Python file. Pulsar finishes in 7.1 s, lithos-metal in 16.9 s."></a><br>
+<sub><b>Editing a pasted 210-line file:</b> Pulsar 1.1.7 finishes its 1,894-token answer in 7.1 s (347 tok/s, up to
+477), lithos-metal 0.1.2 its 1,884 tokens in 16.9 s (150 tok/s). Pulsar takes most of this answer straight from the
 pasted file (prompt lookup).
 <a href="docs/media/lithos-edit.mp4">Video</a></sub></p>
 
-<p align="center"><sub>Qwen3.8-27B on an M5 Max (128 GB, macOS 27.2), greedy, thinking off, one request at a time (2026-10-10).
+<p align="center"><sub>Qwen3.8-27B on an M5 Max (128 GB, macOS 27.2), greedy, thinking off, one request at a time (2026-10-14).
 lithos-metal 0.1.2 is the official release, running NVIDIA's checkpoint (NVFP4 MLP, FP8 attention) with its DSpark
 draft head. Real-time replays of measured token timings.</sub></p>
 
@@ -74,34 +74,34 @@ On an M5 Max, Pulsar 1.1.5 averages **108.0 tok/s** across 13 prompts, from shor
 
 ## M5 Max (128 GB)
 
-**Speed you see** (Qwen3.8-27B 4-bit, Pulsar 1.1.5, greedy, measured from the stream, 2026-10-10):
+**Speed you see** (Qwen3.8-27B 4-bit, Pulsar 1.1.7, greedy, measured from the stream, 2026-10-14):
 
 | Task | Peak | Average | First token |
 |---|---:|---:|---:|
-| Edit a pasted 210-line file | **477 tok/s** | **344 tok/s** | 1.82 s |
-| Write a tip-calculator app (3,000 tokens) | 208 tok/s | 153 tok/s | 0.12 s |
+| Edit a pasted 210-line file | **477 tok/s** | **347 tok/s** | 1.69 s |
+| Write a tip-calculator app (3,000 tokens) | 208 tok/s | 156 tok/s | 0.14 s |
 
 Peak is the most tokens in any one second; average runs from the first token to the last. The edit row is the first
 run (nothing cached), so its first token includes reading the 1,825-token pasted file; the app row is the median of
 three runs.
 
-**Pulsar 1.1.5 vs lithos-metal 0.1.2, Qwen3.8-27B** (2026-10-10):
+**Pulsar 1.1.7 vs lithos-metal 0.1.2, Qwen3.8-27B** (2026-10-14):
 
-On our 128 GB M5 Max running macOS 27.2, Pulsar 1.1.5 delivered **1.44×** the client-observed decode throughput of
+On our 128 GB M5 Max running macOS 27.2, Pulsar 1.1.7 delivered **1.42×** the client-observed decode throughput of
 lithos-metal 0.1.2, its official release (geometric mean over 10 prompts; one ABBA session, greedy decoding, thinking
 off, output capped at 1,024 tokens). Decode tok/s, mean of two runs per prompt:
 
-| Prompt | lithos-metal 0.1.2 | Pulsar 1.1.5 | Pulsar is |
+| Prompt | lithos-metal 0.1.2 | Pulsar 1.1.7 | Pulsar is |
 |---|---:|---:|---:|
-| lithos-metal's launch-video prompt (tip calculator) | 104.2 | **131.8** | 1.26× |
-| Code | 137.9 | **182.9** | 1.33× |
-| Math | 104.8 | **168.6** | 1.61× |
-| Code file | 79.4 | **106.2** | 1.34× |
-| Chat (5 prompts) | 54.0–57.0 | **78.3–91.0** | 1.37–1.65× |
-| Multilingual | 50.2 | **63.7** | 1.27× |
-| **All 10 prompts** | 75.7 | **108.3** | **1.44×** |
+| lithos-metal's launch-video prompt (tip calculator) | 111.2 | **142.3** | 1.28× |
+| Code | 143.8 | **191.9** | 1.33× |
+| Math | 114.9 | **180.1** | 1.57× |
+| Code file | 86.2 | **107.6** | 1.25× |
+| Chat (5 prompts) | 59.4–64.1 | **84.4–97.0** | 1.34–1.63× |
+| Multilingual | 53.8 | **67.9** | 1.26× |
+| **All 10 prompts** | 81.6 | **115.2** | **1.42×** |
 
-The first token arrives in 0.22 s on Pulsar and 0.39 s on lithos-metal (median). lithos-metal runs NVIDIA's checkpoint,
+The first token arrives in 0.22 s on Pulsar and 0.36 s on lithos-metal (median). lithos-metal runs NVIDIA's checkpoint,
 which keeps attention in FP8: it has a 17.6 GB logical target-weight payload per verification pass, against 14.4 GB
 for Pulsar's package, and part of Pulsar's lead comes from that smaller payload. The drafters differ (DSpark vs
 DFlash 2), and answer quality was not compared.
@@ -112,14 +112,14 @@ Pulsar vs other engines:
 
 | Engine | Guesses ahead with | Its speed | Pulsar's speed | Pulsar is |
 |---|---|---:|---:|---|
-| lithos-metal 0.1.2 | DSpark draft head | 75.7 | 108.3 | **1.44× faster** |
+| lithos-metal 0.1.2 | DSpark draft head | 81.6 | 115.2 | **1.42× faster** |
 | Splash 1.3.0 | DFlash 2 draft model | 86.5 | 98.6 | **1.13× faster** |
 | MTPLX | MTP | 64.9 | 125.0 | **1.93× faster** |
-| AX Engine | MTP | 40.1 | 131.0 | **3.27× faster** |
-| MLX-LM | no draft model (its default) | 30.0 | 115.0 | **3.84× faster** |
-| llama.cpp | no draft model (its default) | 27.1 | 121.7 | **4.49× faster** |
+| AX Engine | MTP | 38.3 | 123.2 | **3.22× faster** |
+| MLX-LM | no draft model (its default) | 31.4 | 129.5 | **4.12× faster** |
+| llama.cpp | no draft model (its default) | 27.5 | 122.3 | **4.45× faster** |
 
-Speeds are in tok/s (tokens per second). All rows are Pulsar 1.1.5 (2026-10-10). MTP is the model's own built-in guesser. Each pair ran in one session, taking
+Speeds are in tok/s (tokens per second). Pulsar 1.1.7 (2026-10-14), except the Splash 1.3.0 and MTPLX rows: Pulsar 1.1.5 (2026-10-10). MTP is the model's own built-in guesser. Each pair ran in one session, taking
 turns on the same prompts: 12 prompts against Splash 1.3.0 (chat, math, code, a code file, a 32K-token agent task, a
 multilingual prompt and two long-context prompts), the 6 standard prompts against the others (5 greedy prompts against
 AX Engine). In chat, Pulsar 1.1.5 writes
@@ -130,7 +130,7 @@ Sent again, a 2,247-token prompt starts in 0.1 s: Pulsar 1.1.0 reuses its prompt
 **Also: Qwen3.6-35B-A3B (MoE)**
 
 MoE means "mixture of experts". The model has many small expert blocks and uses only a few of them for each token.
-That makes it fast for its size. On Qwen3.6-35B-A3B, Pulsar 1.1.5 writes **264.3 tok/s** on average across 13 prompts,
+That makes it fast for its size. On Qwen3.6-35B-A3B, Pulsar 1.1.7 writes **282.7 tok/s** on average across 13 prompts,
 from short chat to a 32K-token agent task (greedy, 2026-10-10).
 
 Full numbers and how we measured: [docs/BENCHMARKS.md](docs/BENCHMARKS.md)
