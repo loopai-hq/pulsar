@@ -19,6 +19,29 @@ confidence interval, written [low, high], is the range the true average falls in
 
 ## M5 Max (40-core GPU, 128 GB)
 
+### Pulsar 1.1.8 vs Pulsar 1.1.7
+
+Both servers running at once on the same M5 Max (macOS 27.2, on power), one request at a time with the order
+alternating, same model packages and guesser token list on both sides, Neural Engine off on both (2026-11-06).
+Ratios are 1.1.8 / 1.1.7 with 95% confidence intervals. Every answer matched between the two versions: 24 of 24
+sampled and 24 of 24 greedy per model, and every answer in the multi-request runs.
+
+| Model | Measure | Pulsar 1.1.7 | Pulsar 1.1.8 | 1.1.8 / 1.1.7 |
+|---|---|---:|---:|---|
+| Qwen3.6-35B-A3B | greedy, 12 prompts | 310.9 tok/s | 331.5 tok/s | **1.077×** [1.055, 1.095] |
+| Qwen3.6-35B-A3B | sampled, 12 prompts | 269.7 tok/s | 277.0 tok/s | **1.026×** [1.018, 1.031] |
+| Qwen3.6-35B-A3B | 2 / 3 / 4 requests at once, greedy | 347.1 / 419.6 / 496.3 tok/s | 391.1 / 463.2 / 543.8 tok/s | **1.127× / 1.104× / 1.096×** |
+| Qwen3.6-35B-A3B | first token, new prompt, 12 prompts | | | **1.141×** sooner [1.074, 1.228] |
+| Qwen3.8-27B | sampled, 12 prompts | 98.9 tok/s | 98.1 tok/s | 0.993× [0.987, 0.997]; whole-answer time 0.998× [0.993, 1.001] |
+| Qwen3.8-27B | first token, new prompt, 12 prompts | | | **1.126×** sooner [1.067, 1.195] |
+| Qwen3.8-27B | 2 / 3 / 4 requests at once, greedy | 134.2 / 160.0 / 205.8 tok/s | 133.9 / 160.1 / 203.9 tok/s | 1.00× (same speed) |
+
+35B greedy by kind of prompt: chat 1.099×, multilingual 1.112×, math 1.085×, code files 1.072×, agent 1.076×, code demo
+1.061×, editing 1.039×. Fastest single answers: Qwen3.6-35B-A3B 554.7 tok/s greedy and 407.3 tok/s sampled, Qwen3.8-27B
+167.4 tok/s sampled. These runs shared the Mac with other work, so the tok/s are below the October tables; compare the
+ratios.
+
+
 ### Pulsar vs lithos-metal, greedy, 10 prompts
 
 On our 128 GB M5 Max running macOS 27.2, Pulsar delivered 1.30–1.46× the client-observed decode throughput of

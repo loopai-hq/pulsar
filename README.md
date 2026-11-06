@@ -56,7 +56,7 @@ draft model, its default).
 <p align="center"><sub>Qwen3.8-27B 4-bit on an M5 Max, one engine's server per pane, greedy answers (2026-10-07). Real-time
 replays of measured token timings.</sub></p>
 
-> **Jump to:** [How fast?](#m5-max-128-gb) · [What's new in 1.1.7](#whats-new-in-117) · [Requirements](#requirements) ·
+> **Jump to:** [How fast?](#m5-max-128-gb) · [What's new in 1.1.8](#whats-new-in-118) · [Requirements](#requirements) ·
 > [Quick start](#quick-start) · [What's different](#whats-different-from-splash) · [Models](#models-on-hugging-face) ·
 > [Switches](docs/SWITCHES.md) · [All the numbers](docs/BENCHMARKS.md)
 
@@ -135,24 +135,28 @@ from short chat to a 32K-token agent task (greedy, 2026-10-10).
 
 Full numbers and how we measured: [docs/BENCHMARKS.md](docs/BENCHMARKS.md)
 
-## What's new in 1.1.7
+## What's new in 1.1.8
 
-Qwen3.6-35B-A3B writes faster, and several requests at once run faster. Answers match 1.1.6. Measured against the
-previous release on the same M5 Max, taking turns on the same prompts (greedy, 2026-10-10):
+Qwen3.6-35B-A3B writes faster, most of all with several requests at once, and answers start sooner on both models.
+Answers match 1.1.7. Measured against Pulsar 1.1.7 on the same M5 Max, both servers running, taking turns on the same
+prompts (2026-11-06):
 
-| | Before | Pulsar 1.1.7 | 1.1.7 is |
+| | Pulsar 1.1.7 | Pulsar 1.1.8 | 1.1.8 is |
 |---|---:|---:|---|
-| Qwen3.6-35B-A3B, 13 prompts, average (vs 1.1.6) | 269.7 tok/s | 282.7 tok/s | **4.8% faster** |
-| Qwen3.6-35B-A3B, 13 new prompts, average (vs 1.1.5) | 323.2 tok/s | 338.2 tok/s | **4.6% faster** |
-| Qwen3.6-35B-A3B, 3 requests at once (vs 1.1.6) | 3.54 s | 3.39 s | 4.3% faster |
-| Qwen3.8-27B, 3 requests at once (vs 1.1.6) | 9.04 s | 8.62 s | 4.9% faster |
+| Qwen3.6-35B-A3B, 12 prompts, greedy, average | 310.9 tok/s | 331.5 tok/s | **7.7% faster** |
+| Qwen3.6-35B-A3B, 12 prompts, sampled, average | 269.7 tok/s | 277.0 tok/s | **2.6% faster** |
+| Qwen3.6-35B-A3B, 2 requests at once | 347.1 tok/s | 391.1 tok/s | **12.7% faster** |
+| Qwen3.6-35B-A3B, 4 requests at once | 496.3 tok/s | 543.8 tok/s | **9.6% faster** |
+| Qwen3.8-27B, first token of a new short prompt | 227 ms | 187 ms | **40 ms sooner** |
+| Qwen3.6-35B-A3B, first token of a new short prompt | 75.8 ms | 62.6 ms | **13 ms sooner** |
 
-Both 35B runs used the guesser token list on both sides. The 13 new prompts were never used to tune Pulsar.
-The new kernels apply on the 40-core M5 Max; other Macs run 1.1.6's.
+Qwen3.8-27B writes at 1.1.7's speed. The 35B gains were measured on the 40-core M5 Max. 1.1.8 also brings fixes from
+Splash 1.3.1 to 1.6.0: results with invalid numbers (NaN) are never cached, a restart after a crash serves requests
+again, and the launcher keeps the server's key away from any proxy you set. All the numbers: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
-**1.1.6:** long prompts write faster, 6.9% on a 32K-token agent task with Qwen3.8-27B (77.9 → 83.3 tok/s).
+**1.1.7:** Qwen3.6-35B-A3B 4.8% faster (269.7 → 282.7 tok/s); 3 requests at once 4.3% (35B) and 4.9% (27B) faster.
 
-**Download and source.** Pulsar 1.1.7 ships as a ready-to-run download, the latest Pulsar. This repository holds the
+**Download and source.** Pulsar 1.1.8 ships as a ready-to-run download, the latest Pulsar. This repository holds the
 Apache-2.0 source of Pulsar 1.1.4, which builds and runs as before.
 
 ## Requirements
@@ -176,13 +180,13 @@ Mac. Then put `SPLASH_TEXT_ONLY=1` in front of the serve command. It skips the p
 
 For Qwen3.6-35B-A3B, run `./pulsar serve --model incoai/Qwen3.6-35B-A3B-Splash`, without `SPLASH_DRAFT_HEAD_IDS`.
 
-### Download Pulsar 1.1.7 (latest, no Xcode)
+### Download Pulsar 1.1.8 (latest, no Xcode)
 
-Download `pulsar-1.1.7-macos-arm64.tar.gz` from
+Download `pulsar-1.1.8-macos-arm64.tar.gz` from
 [Releases](https://github.com/loopai-hq/pulsar/releases/latest). Then unpack it and start the server:
 
 ```bash
-tar -xzf pulsar-1.1.7-macos-arm64.tar.gz && cd pulsar
+tar -xzf pulsar-1.1.8-macos-arm64.tar.gz && cd pulsar
 SPLASH_DRAFT_HEAD_IDS=$PWD/data/head-ranked.u32 ./pulsar serve --model incoai/Qwen3.8-27B-Splash
 ```
 
@@ -256,7 +260,7 @@ LICENSE, NOTICE and THIRD_PARTY_NOTICES. If you build on Pulsar, keep the NOTICE
 called fastkernel until version 1.1.3.
 
 Thank you to [Inco AI](https://github.com/incoai) for [Splash](https://github.com/incoai/splash), the Apache-2.0 engine
-Pulsar is built on, and for the DFlash 2 draft models and Splash model packages Pulsar runs. Pulsar 1.1.7 is built on
+Pulsar is built on, and for the DFlash 2 draft models and Splash model packages Pulsar runs. Pulsar 1.1.8 is built on
 Splash 1.3.0. Splash's own README: [docs/SPLASH-README.md](docs/SPLASH-README.md). Thank you also to the Qwen team for
 the Qwen models and to mlx-community for the 4-bit conversions. Third-party code that Splash ships keeps its own
 license: [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES). Files we changed from Splash say "Modified by Pulsar."; the
