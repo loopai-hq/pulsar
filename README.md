@@ -54,7 +54,8 @@ draft model, its default).
 <a href="docs/media/code-edit.mp4">Video</a></sub></p>
 
 <p align="center"><sub>Qwen3.8-27B 4-bit on an M5 Max, one engine's server per pane, greedy answers (2026-10-07). Real-time
-replays of measured token timings.</sub></p>
+replays of measured token timings. The videos above were recorded with Pulsar 1.1.5 to 1.1.7; Pulsar 1.1.8 writes
+Qwen3.8-27B at the same speed as 1.1.7 (measured 2026-11-06).</sub></p>
 
 > **Jump to:** [How fast?](#m5-max-128-gb) · [What's new in 1.1.8](#whats-new-in-118) · [Requirements](#requirements) ·
 > [Quick start](#quick-start) · [What's different](#whats-different-from-splash) · [Models](#models-on-hugging-face) ·
