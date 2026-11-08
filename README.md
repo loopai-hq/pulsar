@@ -11,8 +11,8 @@ A fork of Inco AI's <a href="https://github.com/incoai/splash">Splash</a>, with 
 <img src="https://img.shields.io/badge/API-OpenAI%20%2B%20Anthropic-555" alt="OpenAI and Anthropic APIs">
 </p>
 
-<p align="center"><a href="docs/media/lithos-edit.mp4"><img src="docs/media/lithos-edit.webp" width="720" alt="Pulsar 1.1.7 and lithos-metal 0.1.2 edit the same pasted 210-line Python file. Pulsar finishes in 7.1 s, lithos-metal in 16.9 s."></a><br>
-<sub>Editing a pasted 210-line file: Pulsar 1.1.7 finishes in 7.1 s, lithos-metal 0.1.2 in 16.9 s.
+<p align="center"><a href="docs/media/lithos-edit.mp4"><img src="docs/media/lithos-edit.webp" width="720" alt="Pulsar 1.1.8 and lithos-metal 0.1.2 edit the same pasted 210-line Python file. Over the first 1,884 tokens, Pulsar takes 8.6 s, lithos-metal 16.4 s."></a><br>
+<sub>Editing a pasted 210-line file: Pulsar 1.1.8 8.6 s, lithos-metal 0.1.2 16.4 s (first 1,884 tokens, 307 vs 150 tok/s).
 <a href="docs/media/lithos-edit.mp4">Video</a> · <a href="#videos">More videos</a></sub></p>
 
 On an M5 Max with Qwen3.8-27B:
@@ -114,24 +114,29 @@ What each part does and what it gained: [docs/WHATS-INSIDE.md](docs/WHATS-INSIDE
 
 ## Videos
 
-Real-time replays of measured token timings, Qwen3.8-27B on an M5 Max, greedy. Each caption says which Pulsar version
-it shows; 1.1.8 writes Qwen3.8-27B at the same speed as 1.1.7.
+Real-time replays of measured token timings, Pulsar 1.1.8 on an M5 Max (40-core GPU) with no extra cooling, greedy,
+recorded 2026-11-08. Engines in a video ran in the same session; where answers differ in length, the race covers the
+first N tokens of each engine's own answer.
 
-<p align="center"><a href="docs/media/lithos-tip.mp4"><img src="docs/media/lithos-tip.webp" width="720" alt="Pulsar 1.1.7 and lithos-metal 0.1.2 answer lithos-metal's launch-video prompt, a tip calculator. Pulsar writes 3,000 tokens in 19.3 s, lithos-metal in 25.0 s."></a><br>
-<sub>lithos-metal's own launch-video prompt: Pulsar 1.1.7 writes 3,000 tokens in 19.3 s, lithos-metal 0.1.2 in 25.0 s
-(2026-10-14). <a href="docs/media/lithos-tip.mp4">Video</a></sub></p>
+<p align="center"><a href="docs/media/lithos-tip.mp4"><img src="docs/media/lithos-tip.webp" width="720" alt="Pulsar 1.1.8 and lithos-metal 0.1.2 answer lithos-metal's launch-video prompt, a tip calculator. Pulsar writes 3,000 tokens in 22.3 s, lithos-metal in 25.3 s."></a><br>
+<sub>lithos-metal's own launch-video prompt: Pulsar 1.1.8 writes 3,000 tokens in 22.3 s (135 tok/s), lithos-metal 0.1.2
+in 25.3 s (120 tok/s). <a href="docs/media/lithos-tip.mp4">Video</a></sub></p>
 
-<p align="center"><a href="docs/media/code-edit.mp4"><img src="docs/media/code-edit.webp" width="720" alt="Pulsar 1.1.0, Splash 1.3.0 and MLX-LM edit the same pasted 210-line Python file. Pulsar finishes in 8.2 s, Splash in 11.7 s, MLX-LM in 64.5 s."></a><br>
-<sub>Editing a pasted file: Pulsar 1.1.0 8.2 s · Splash 1.3.0 11.7 s · MLX-LM 64.5 s (2026-10-07).
-<a href="docs/media/code-edit.mp4">Video</a></sub></p>
+<p align="center"><a href="docs/media/code-edit.mp4"><img src="docs/media/code-edit.webp" width="720" alt="Pulsar 1.1.8, Splash 1.6.0 and MLX-LM 0.31.3 edit the same pasted 210-line Python file. Over the first 1,884 tokens, Pulsar takes 7.2 s, Splash 11.8 s, MLX-LM 67.7 s."></a><br>
+<sub>Editing a pasted file: Pulsar 1.1.8 7.2 s · Splash 1.6.0 11.8 s · MLX-LM 67.7 s (first 1,884 tokens; 336 vs 191 vs
+29 tok/s). <a href="docs/media/code-edit.mp4">Video</a></sub></p>
 
-<p align="center"><a href="docs/media/speed-race.mp4"><img src="docs/media/speed-race.webp" width="720" alt="Pulsar 1.1.0, Splash 1.3.0 and MLX-LM write the same 708-token answer. Pulsar finishes in 3.97 s, Splash in 4.07 s, MLX-LM in 23.1 s."></a><br>
-<sub>The same 708-token answer: Pulsar 1.1.0 3.97 s · Splash 1.3.0 4.07 s · MLX-LM 23.1 s (2026-10-07).
-<a href="docs/media/speed-race.mp4">Video</a></sub></p>
+<p align="center"><a href="docs/media/speed-race.mp4"><img src="docs/media/speed-race.webp" width="720" alt="Pulsar 1.1.8, Splash 1.6.0 and MLX-LM 0.31.3 write a Python todo app. Over the first 708 tokens, Pulsar takes 3.92 s, Splash 4.31 s, MLX-LM 23.6 s."></a><br>
+<sub>A small Python app: Pulsar 1.1.8 3.92 s · Splash 1.6.0 4.31 s · MLX-LM 23.6 s (first 708 tokens; 185 vs 167 vs
+30 tok/s). <a href="docs/media/speed-race.mp4">Video</a></sub></p>
 
-<p align="center"><a href="docs/media/galaxy-app.mp4"><img src="docs/media/galaxy-app.webp" width="720" alt="Pulsar 1.1.0 and Splash 1.3.0 write a particle-galaxy app. Pulsar writes its 3,124 tokens in 20.9 s; Splash takes 22.1 s. Then the galaxy Pulsar wrote runs."></a><br>
-<sub>A particle-galaxy app in one shot: Pulsar 1.1.0 writes 3,124 tokens in 20.9 s, Splash 1.3.0 in 22.1 s, then the
-app runs (2026-10-07). <a href="docs/media/galaxy-app.mp4">Video</a></sub></p>
+<p align="center"><a href="docs/media/galaxy-app.mp4"><img src="docs/media/galaxy-app.webp" width="720" alt="Pulsar 1.1.8 and Splash 1.6.0 write a particle-galaxy app. Over the first 3,124 tokens, Pulsar takes 20.0 s, Splash 23.1 s. Then the galaxy Pulsar wrote runs."></a><br>
+<sub>A particle-galaxy app in one shot: Pulsar 1.1.8 20.0 s, Splash 1.6.0 23.1 s (first 3,124 tokens), then the app runs.
+<a href="docs/media/galaxy-app.mp4">Video</a></sub></p>
+
+<p align="center"><a href="docs/media/moe-chat.mp4"><img src="docs/media/moe-chat.webp" width="720" alt="Pulsar 1.1.8 and Pulsar 1.1.7 run Qwen3.6-35B-A3B on the same chat prompt. Both write the same 1,024 tokens; 1.1.8 at 271 tok/s, 1.1.7 at 247 tok/s."></a><br>
+<sub>Qwen3.6-35B-A3B, 1.1.8 vs 1.1.7: the same 1,024-token answer at 271 vs 247 tok/s (3.80 s vs 4.20 s).
+<a href="docs/media/moe-chat.mp4">Video</a></sub></p>
 
 ## Requirements
 
