@@ -58,7 +58,7 @@ Pulsar's changes to Splash each have an environment variable. Set it in front of
 | Switch | Default | Effect |
 |---|---|---|
 | `SPLASH_TEXT_ONLY` | off | `1` skips the image-reading weights, and image requests are refused. For 24 GB Macs. |
-| `SPLASH_DRAFT_HEAD_IDS` | unset | A token-ID file for the draft's smaller vocabulary. The Quick start sets it to `data/head-ranked.u32`. |
+| `SPLASH_DRAFT_HEAD_IDS` | unset | A token-ID file for the draft's smaller vocabulary. From 1.1.9 it defaults to `data/head-ranked.u32`; set it empty to turn it off. |
 | `SPLASH_DRAFT_HEAD_ROWS` | 98304 | How many IDs from that file the draft uses. |
 
 ## Diagnostics

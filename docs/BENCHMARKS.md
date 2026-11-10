@@ -19,6 +19,25 @@ confidence interval, written [low, high], is the range the true average falls in
 
 ## M5 Max (40-core GPU, 128 GB)
 
+### Pulsar 1.1.9 vs Pulsar 1.1.8
+
+Both servers running at once on the same M5 Max (macOS 27.3, on power), one request at a time with the order
+alternating, Neural Engine off on both (2026-11-10). 12 prompts with 6 seeds each, 72 pairs per row. Pulsar 1.1.9
+serves the MLX 4-bit models, Pulsar 1.1.8 its `incoai/...-Splash` packages. Ratios are
+1.1.9 / 1.1.8 with 95% confidence intervals.
+
+| Model | Measure | Pulsar 1.1.8 | Pulsar 1.1.9 | 1.1.9 / 1.1.8 |
+|---|---|---:|---:|---|
+| Qwen3.6-35B-A3B | sampled | 273.7 tok/s | 309.5 tok/s | **1.126×** [1.098, 1.153] |
+| Qwen3.6-35B-A3B | greedy | 305.6 tok/s | 326.3 tok/s | **1.068×** [1.050, 1.083] |
+| Qwen3.8-27B | sampled | 101.4 tok/s | 104.1 tok/s | **1.026×** [1.008, 1.046] |
+| Qwen3.8-27B | greedy | 108.9 tok/s | 112.0 tok/s | **1.028×** [1.017, 1.039] |
+| Qwen3.6-35B-A3B | GPU energy per token, sampled / greedy | 0.138 / 0.141 J | 0.121 / 0.131 J | 12% / 7% less |
+| Qwen3.8-27B | GPU energy per token, sampled / greedy | 0.410 / 0.438 J | 0.405 / 0.427 J | 1% / 3% less |
+
+Greedy answers match Splash 1.6.0 exactly below 8,000 tokens of history. Qwen3.6-35B-A3B picks its number of
+draft rows as it runs, so its greedy text can vary from run to run.
+
 ### Pulsar 1.1.8 vs Pulsar 1.1.7
 
 Both servers running at once on the same M5 Max (macOS 27.2, on power), one request at a time with the order

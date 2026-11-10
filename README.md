@@ -26,17 +26,17 @@ Every token is still checked by the full model, so you get the model's own answe
 
 ## Quick start
 
-Download `pulsar-1.1.8-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
+Download `pulsar-1.1.9-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
 
 ```bash
-tar -xzf pulsar-1.1.8-macos-arm64.tar.gz && cd pulsar
-SPLASH_DRAFT_HEAD_IDS=$PWD/data/head-ranked.u32 ./pulsar serve --model incoai/Qwen3.8-27B-Splash
+tar -xzf pulsar-1.1.9-macos-arm64.tar.gz && cd pulsar
+./pulsar serve --model mlx-community/Qwen3.8-27B-4bit
 ```
 
-Open <http://127.0.0.1:8000> to chat. The first run downloads the model (17.4 GB) and spends about 20 seconds
+Open <http://127.0.0.1:8000> to chat. The first run downloads the model (20 GB) and spends about 20 seconds
 setting up Python. The server speaks the OpenAI and Anthropic APIs, so most apps can use it as is.
 
-- **Qwen3.6-35B-A3B:** `./pulsar serve --model incoai/Qwen3.6-35B-A3B-Splash`
+- **Qwen3.6-35B-A3B:** `./pulsar serve --model mlx-community/Qwen3.6-35B-A3B-4bit` (21 GB)
 - **24 GB Mac:** run `sudo sysctl iogpu.wired_limit_mb=20480` once (it lasts until a restart), and put
   `SPLASH_TEXT_ONLY=1` in front of the serve command.
 - **Downloaded with a browser or AirDrop:** run `/usr/bin/xattr -dr com.apple.quarantine .` in the `pulsar` folder first.
@@ -50,7 +50,7 @@ Leave the server running, open a second terminal in the `pulsar` folder and run:
 ```
 
 The agent opens already connected. Other apps can use `http://127.0.0.1:8000/v1` (OpenAI) or
-`http://127.0.0.1:8000` (Anthropic) with the model `incoai/Qwen3.8-27B-Splash`.
+`http://127.0.0.1:8000` (Anthropic) with the model `mlx-community/Qwen3.8-27B-4bit`.
 
 There's also a skill that teaches an agent to install, start and stop Pulsar:
 [`.claude/skills/pulsar`](.claude/skills/pulsar/SKILL.md). Claude Code and OpenCode pick it up in this folder; copy it to
@@ -73,27 +73,27 @@ Pulsar 1.1.7 (2026-10-14); the Splash and MTPLX rows are Pulsar 1.1.5 (2026-10-1
 so compare within a row. lithos-metal runs NVIDIA's checkpoint, which keeps attention in FP8 and reads 17.6 GB of
 weights per step against Pulsar's 14.4 GB.
 
-On Qwen3.6-35B-A3B, a mixture-of-experts model that only uses a few small blocks per token, Pulsar 1.1.8 writes
-**331.5 tok/s** on average across 12 prompts (greedy, 2026-11-06).
+On Qwen3.6-35B-A3B, a mixture-of-experts model that only uses a few small blocks per token, Pulsar 1.1.9 writes
+**326 tok/s** on average across 12 prompts (greedy, 2026-11-10; 1.1.8 in the same session: 306).
 
 Every session, prompt and setting: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
-## What's new in 1.1.8
+## What's new in 1.1.9
 
-Qwen3.6-35B-A3B is faster, especially with several requests at once, and answers start sooner on both models. Answers
-match 1.1.7. Measured against 1.1.7 on the same M5 Max, taking turns on the same prompts (2026-11-06):
+Pulsar now runs on the Splash 1.6.0 engine, and both models write faster while using less GPU energy per token.
+Measured against 1.1.8 on the same M5 Max, taking turns on the same 12 prompts with 6 seeds each (2026-11-10):
 
-| | 1.1.7 | 1.1.8 | |
+| | 1.1.8 | 1.1.9 | |
 |---|---:|---:|---|
-| Qwen3.6-35B-A3B, greedy | 310.9 tok/s | 331.5 tok/s | **7.7% faster** |
-| Qwen3.6-35B-A3B, sampled | 269.7 tok/s | 277.0 tok/s | **2.6% faster** |
-| Qwen3.6-35B-A3B, 2 requests at once | 347.1 tok/s | 391.1 tok/s | **12.7% faster** |
-| Qwen3.6-35B-A3B, 4 requests at once | 496.3 tok/s | 543.8 tok/s | **9.6% faster** |
-| Qwen3.8-27B, first token | 227 ms | 187 ms | **40 ms sooner** |
-| Qwen3.6-35B-A3B, first token | 75.8 ms | 62.6 ms | **13 ms sooner** |
+| Qwen3.6-35B-A3B, sampled | 273.7 tok/s | 309.5 tok/s | **12.6% faster** |
+| Qwen3.6-35B-A3B, greedy | 305.6 tok/s | 326.3 tok/s | **6.8% faster** |
+| Qwen3.8-27B, sampled | 101.4 tok/s | 104.1 tok/s | **2.6% faster** |
+| Qwen3.8-27B, greedy | 108.9 tok/s | 112.0 tok/s | **2.8% faster** |
+| Qwen3.6-35B-A3B, GPU energy per token (sampled) | 0.138 J | 0.121 J | **12% less** |
 
-Qwen3.8-27B writes at 1.1.7's speed. 1.1.8 also brings fixes from Splash 1.3.1 to 1.6.0: invalid numbers are never
-cached, a restart after a crash serves requests again, and the launcher keeps the server's key away from any proxy.
+Upgrading from 1.1.8: 1.1.9 serves the standard MLX 4-bit models (`mlx-community/Qwen3.8-27B-4bit`,
+`mlx-community/Qwen3.6-35B-A3B-4bit`), so the first run downloads the model again; the old `incoai/...-Splash`
+download can be deleted. The guesser token list now loads by itself.
 Older releases: [Releases](https://github.com/loopai-hq/pulsar/releases).
 
 ## How it works
