@@ -20,6 +20,27 @@ confidence interval, written [low, high], is the range the true average falls in
 
 ## M5 Max (40-core GPU, 128 GB)
 
+### Pulsar 1.2.1 vs Pulsar 1.2.0, Inkling 2 Mini
+
+One session on the same M5 Max (macOS 27.3, on power), 2026-11-24 14:48 to 14:53. Both servers loaded at once, one
+request at a time in a mirrored order. Greedy answers with a fixed verify budget (`SPLASH_VERIFY_FIXED=1`) on both
+servers, so both versions do the same work: every 1.2.1 answer is byte-identical to 1.2.0's. Pulsar 1.2.0 runs with
+`SPLASH_PROMPT_LOOKUP=1`, as its README says; Pulsar 1.2.1 with its defaults. Chat tok/s is pooled over both prompts.
+
+| Prompt | Pulsar 1.2.0 | Pulsar 1.2.1 | 1.2.1 / 1.2.0 |
+|---|---:|---:|---|
+| Chat: h-chat-1, 1,024 tokens | 82.3 tok/s | 87.7 tok/s | 1.066× |
+| Chat: ultrachat-0 | 298.0 tok/s | 305.7 tok/s | 1.026× |
+| Chat, both prompts pooled | | | **1.056×** |
+| Code: magicoder-1, 2,169 tokens | 152.4 tok/s | 153.0 tok/s | 1.004× |
+
+At the default settings (the verify budget learned as it runs, nothing sent for sampling) the same session read chat
+1.065× and code 1.011×. magicoder-0 ran at GPU clock states 0.36 apart and is left out of the code reading.
+
+Inkling 2 Mini's first start after the update is ready in about a minute on this Mac (68 s; 1.2.0 spent 192 s
+preparing its kernels), and later starts in 7 to 9 s. Qwen's first start prepares 3 more small kernels than in 1.2.0
+(0.12 s in all).
+
 ### Pulsar 1.2.0 vs MTPLX 2.13.1, Inkling 2 Mini
 
 One session on the same M5 Max (macOS 27.3, on power), 2026-11-24 04:12 to 04:25. Both servers loaded at once, one

@@ -40,7 +40,7 @@ Pulsar's changes to Splash each have an environment variable. Set it in front of
 | `SPLASH_DRAFT_AHEAD_LOOKUP_QUIET` | 8 | Drafting ahead starts after this many steps without a prompt-lookup step. |
 | `SPLASH_DRAFT_TAU` | 0.85 | The draft model's own sampling temperature. `1` keeps its probabilities unchanged. |
 | `SPLASH_DRAFT_TOP_P` | 0.99 | The draft model's own top-p. `1` turns it off. |
-| `SPLASH_PROMPT_LOOKUP` | on | One request: guesses can come straight from your prompt instead of the draft model. Qwen3.6-35B-A3B and Inkling 2 Mini take them with `1`. |
+| `SPLASH_PROMPT_LOOKUP` | on | One request: guesses can come straight from your prompt instead of the draft model. Inkling 2 Mini takes them by default (`0` turns that off); Qwen3.6-35B-A3B takes them with `1`. |
 | `SPLASH_WIDE_PROMPT_LOOKUP` | on | Prompt-lookup guesses are checked 16 rows at once, each row byte-exact with an 8-row check. |
 | `SPLASH_WIDE_LOOKUP32` | 1 | Wide checks go up to 32 rows where the GPU keeps them exact. `0`: 16 rows. |
 | `SPLASH_LOOKUP_ADAPTIVE` | on | Each request adapts how long a repeated stretch must be before lookup guesses from it. |

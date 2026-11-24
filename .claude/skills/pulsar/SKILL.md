@@ -17,10 +17,10 @@ it is, ask the user.
 
 ## 2. Install (once)
 
-Download `pulsar-1.2.0-macos-arm64.tar.gz` from https://github.com/loopai-hq/pulsar/releases/latest, then:
+Download `pulsar-1.2.1-macos-arm64.tar.gz` from https://github.com/loopai-hq/pulsar/releases/latest, then:
 
 ```bash
-tar -xzf pulsar-1.2.0-macos-arm64.tar.gz && cd pulsar
+tar -xzf pulsar-1.2.1-macos-arm64.tar.gz && cd pulsar
 ```
 
 If `./pulsar` says macOS quarantined the download, run the `xattr` command it prints. Each model downloads on its
@@ -33,11 +33,12 @@ Run one in its own terminal or as a background process, and leave it running:
 ```bash
 ./pulsar serve --model mlx-community/Qwen3.8-27B-4bit                            # 20 GB
 ./pulsar serve --model mlx-community/Qwen3.6-35B-A3B-4bit                        # 21 GB
-SPLASH_PROMPT_LOOKUP=1 ./pulsar serve --model mlx-community/Inkling-2-Mini-4bit  # 17 GB
+./pulsar serve --model mlx-community/Inkling-2-Mini-4bit                         # 17 GB
 ```
 
 - Inkling 2 Mini: Pulsar also fetches its draft, the 0.6 GB `mtp.safetensors` of `thinkingmachines/Inkling-2-Mini`,
-  by itself, and serves the model's text. `SPLASH_PROMPT_LOOKUP=1` lets it take guesses straight from the prompt.
+  by itself, and serves the model's text. It takes guesses straight from the prompt by default
+  (`SPLASH_PROMPT_LOOKUP=0` turns that off).
 - The first start prepares Pulsar's GPU kernels for this Mac; later starts are ready in seconds.
 - It's ready when it prints `Ready` and `curl -s http://127.0.0.1:8000/status` shows `"ready": true`.
 - The defaults are the tuned settings. Don't add other `SPLASH_` variables.

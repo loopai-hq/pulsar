@@ -26,10 +26,10 @@ Every token is still checked by the full model, so you get the model's own answe
 
 ## Quick start
 
-Download `pulsar-1.2.0-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
+Download `pulsar-1.2.1-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
 
 ```bash
-tar -xzf pulsar-1.2.0-macos-arm64.tar.gz && cd pulsar
+tar -xzf pulsar-1.2.1-macos-arm64.tar.gz && cd pulsar
 ./pulsar serve --model mlx-community/Qwen3.8-27B-4bit
 ```
 
@@ -38,10 +38,10 @@ setting up Python. Each model's first start also prepares Pulsar's GPU kernels f
 ready in seconds. The server speaks the OpenAI and Anthropic APIs, so most apps can use it as is.
 
 - **Qwen3.6-35B-A3B:** `./pulsar serve --model mlx-community/Qwen3.6-35B-A3B-4bit` (21 GB)
-- **Inkling 2 Mini:** `SPLASH_PROMPT_LOOKUP=1 ./pulsar serve --model mlx-community/Inkling-2-Mini-4bit` (17 GB).
+- **Inkling 2 Mini:** `./pulsar serve --model mlx-community/Inkling-2-Mini-4bit` (17 GB).
   Pulsar also fetches its draft, the 0.6 GB `mtp.safetensors` of
   [thinkingmachines/Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini), and serves the model's
-  text. `SPLASH_PROMPT_LOOKUP=1` lets it take guesses straight from your prompt, as in the measurements below.
+  text. It takes guesses straight from your prompt by default; `SPLASH_PROMPT_LOOKUP=0` turns that off.
 - **24 GB Mac:** run `sudo sysctl iogpu.wired_limit_mb=20480` once (it lasts until a restart), and put
   `SPLASH_TEXT_ONLY=1` in front of the serve command.
 - **Downloaded with a browser or AirDrop:** run `/usr/bin/xattr -dr com.apple.quarantine .` in the `pulsar` folder first.
@@ -87,9 +87,22 @@ pack).
 
 Every session, prompt and setting: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
-## What's new in 1.2.0
+## What's new in 1.2.1
 
-Pulsar now runs [Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini), drafting with the
+- Inkling 2 Mini starts with the plain command above: prompt lookup is on by default (`SPLASH_PROMPT_LOOKUP=0` turns it
+  off), and 1.2.0's command with `SPLASH_PROMPT_LOOKUP=1` still works.
+- Chat on Inkling 2 Mini is **1.056×** as fast as 1.2.0 (87.7 against 82.3 tok/s on a 1,024-token answer), code keeps
+  1.2.0's speed (1.004×), and every answer is byte-identical to 1.2.0's at the same settings (2026-11-24).
+- Inkling 2 Mini's first start after an update is ready in about a minute (1.2.0: about 3 minutes); later starts in 7
+  to 9 s.
+- A branch of an earlier Inkling 2 Mini chat answers about 2 s sooner; it needs free memory.
+- Qwen's first start prepares 3 more small kernels than in 1.2.0 (0.12 s in all).
+
+Upgrading from 1.2.0: the same models and commands.
+
+### 1.2.0
+
+Pulsar 1.2.0 added [Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini), drafting with the
 `mtp.safetensors` draft of its official release. Measured against MTPLX 2.13.1 on the same M5 Max, one session taking
 turns on the same prompts (2026-11-24):
 
@@ -106,8 +119,8 @@ A model's first start prepares Pulsar's GPU kernels for your Mac, once: on an M5
 Qwen3.6-35B-A3B in 175 s, and Inkling 2 Mini in 498 s including its 17 GB download. Later starts are ready in 8 to
 20 s, and switching between Inkling 2 Mini and Qwen3.6-35B-A3B takes 8 to 9 s.
 
-Upgrading from 1.1.9: the same models and commands; the first start after the upgrade prepares the kernels once.
-Older releases: [Releases](https://github.com/loopai-hq/pulsar/releases).
+Upgrading from 1.1.9 or earlier: the same models and commands; the first start after the upgrade prepares the kernels
+once. Older releases: [Releases](https://github.com/loopai-hq/pulsar/releases).
 
 ## How it works
 
@@ -188,7 +201,7 @@ THIRD_PARTY_NOTICES. If you build on Pulsar, keep the NOTICE file and credit Pul
 version 1.1.3.
 
 Thank you to [Inco AI](https://github.com/incoai) for [Splash](https://github.com/incoai/splash), the engine Pulsar is
-built on (1.2.0 is built on Splash 1.6.0), and for the DFlash 2 draft models and model packages Pulsar runs; to the
+built on (1.2.1 is built on Splash 1.6.0), and for the DFlash 2 draft models and model packages Pulsar runs; to the
 Qwen team for the Qwen models; to [thinkingmachines](https://huggingface.co/thinkingmachines) for Inkling 2 Mini and
 its draft; and to mlx-community for the 4-bit conversions. Splash's own README is
 [docs/SPLASH-README.md](docs/SPLASH-README.md). Third-party code keeps its own license
