@@ -24,10 +24,10 @@ Every token is checked by the full model, so you get the model's own answers, ju
 
 ## Quick start
 
-Download `pulsar-1.2.1-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
+Download `pulsar-1.2.2-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
 
 ```bash
-tar -xzf pulsar-1.2.1-macos-arm64.tar.gz && cd pulsar
+tar -xzf pulsar-1.2.2-macos-arm64.tar.gz && cd pulsar
 ./pulsar serve --model mlx-community/Qwen3.8-27B-4bit
 ```
 

@@ -17,10 +17,10 @@ it is, ask the user.
 
 ## 2. Install (once)
 
-Download `pulsar-1.2.1-macos-arm64.tar.gz` from https://github.com/loopai-hq/pulsar/releases/latest, then:
+Download `pulsar-1.2.2-macos-arm64.tar.gz` from https://github.com/loopai-hq/pulsar/releases/latest, then:
 
 ```bash
-tar -xzf pulsar-1.2.1-macos-arm64.tar.gz && cd pulsar
+tar -xzf pulsar-1.2.2-macos-arm64.tar.gz && cd pulsar
 ```
 
 If `./pulsar` says macOS quarantined the download, run the `xattr` command it prints. Each model downloads on its

@@ -20,6 +20,18 @@ confidence interval, written [low, high], is the range the true average falls in
 
 ## M5 Max (40-core GPU, 128 GB)
 
+### Start times, Pulsar 1.2.2, Inkling 2 Mini
+
+Seconds from the server's "Loading" line to "Ready" on the same M5 Max (macOS 27.3, on power), 2026-11-24.
+
+| Start | Pulsar 1.2.1 | Pulsar 1.2.2 |
+|---|---:|---:|
+| First start after an update, Pulsar's GPU kernel cache empty | 53 s | **21 s** |
+| Later starts, the two releases side by side, each started twice in turns | 6.5 s | 6.5 s |
+
+Pulsar 1.2.2's first start is ready about 30 s after the serve command; later starts of both releases are ready 8 to 9 s
+after it, and their first chat answers ran at 91 to 97 tok/s.
+
 ### Pulsar 1.2.1 vs Pulsar 1.2.0, Inkling 2 Mini
 
 One session on the same M5 Max (macOS 27.3, on power), 2026-11-24 14:48 to 14:53. Both servers loaded at once, one
