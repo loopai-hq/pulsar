@@ -1,6 +1,7 @@
 # Benchmarks
 
-We measured every number here on our own Macs. The tests use Qwen3.8-27B (4-bit), plus one run with Qwen3.6-35B-A3B.
+We measured every number here on our own Macs. The tests use Qwen3.8-27B (4-bit), plus runs with Qwen3.6-35B-A3B and
+Inkling 2 Mini.
 
 ## How to read the numbers
 
@@ -18,6 +19,65 @@ long-context prompts, 12 in all. Each test's fine print, such as seeds and build
 confidence interval, written [low, high], is the range the true average falls in, with 95% confidence.
 
 ## M5 Max (40-core GPU, 128 GB)
+
+### Pulsar 1.2.0 vs MTPLX 2.13.1, Inkling 2 Mini
+
+One session on the same M5 Max (macOS 27.3, on power), 2026-11-24 04:12 to 04:25. Both servers loaded at once, one
+request at a time in a mirrored order (A B B A, then B A A B), 28 answers back to back after a 185 s rest with the GPU
+idle. Pulsar 1.2.0 runs `mlx-community/Inkling-2-Mini-4bit` text only, with the `mtp.safetensors` draft of
+`thinkingmachines/Inkling-2-Mini` and `SPLASH_PROMPT_LOOKUP=1`. MTPLX 2.13.1 runs its own 4-bit pack,
+`Youssofal/Inkling-2-Mini-MTPLX-Bare-Speed`, at its defaults. The requests set no sampling or effort, so each server
+uses its own defaults. tok/s is the tokens over the seconds of whole answers, pooled by kind.
+
+| Kind | Answers | MTPLX 2.13.1 | Pulsar 1.2.0 | Pulsar is |
+|---|---:|---:|---:|---|
+| Code: 3 prompts, up to 4,096 tokens | 12 | 81.9 tok/s | 104.3 tok/s | **1.27×** |
+| Chat: 2 prompts, up to 1,024 tokens | 16 | 66.7 tok/s | 68.0 tok/s | **1.02×** |
+
+By prompt, Pulsar / MTPLX: magicoder-0 1.38×, magicoder-1 1.35×, "html flappy bird" 1.20×, h-chat-1 1.03×,
+ultrachat-0 1.01×. Tokens kept per step: code 3.41 against 3.10, chat 1.99 against 1.76. Time to the first token:
+0.07 to 0.19 s on Pulsar, 0.07 to 0.41 s on MTPLX. Other work ran on the Mac beside this session (2 to 6 CPU cores
+busy); both servers shared it, taking turns.
+
+### Pulsar 1.2.0 vs Pulsar 1.1.9, Qwen
+
+Both servers running at once on the same M5 Max (macOS 27.3, on power), one request at a time with the order
+alternating, Neural Engine off on both (2026-11-24). 12 prompts with 3 seeds each, 36 pairs per row (6 seeds, 72 pairs,
+for Qwen3.6-35B-A3B sampled). Both serve the MLX 4-bit models. Ratios are 1.2.0 / 1.1.9 with 95% confidence intervals.
+
+| Model | Measure | Pulsar 1.1.9 | Pulsar 1.2.0 | 1.2.0 / 1.1.9 |
+|---|---|---:|---:|---|
+| Qwen3.6-35B-A3B | sampled | 312.5 tok/s | 315.4 tok/s | **1.009×** [0.989, 1.028] |
+| Qwen3.6-35B-A3B | greedy | 328.9 tok/s | 326.1 tok/s | 0.993× [0.975, 1.013] |
+| Qwen3.8-27B | sampled | 81.6 tok/s | 81.8 tok/s | **1.002×** [0.999, 1.004] |
+| Qwen3.8-27B | greedy | 100.2 tok/s | 100.1 tok/s | 0.999× [0.998, 1.001] |
+| Qwen3.6-35B-A3B | GPU energy per token, sampled | 0.125 J | 0.123 J | 2% less |
+| Qwen3.8-27B | GPU energy per token, sampled | 0.309 J | 0.310 J | the same |
+
+Qwen3.8-27B's greedy answers are identical to 1.1.9's on all 12 prompts. Qwen3.6-35B-A3B picks its number of draft
+rows as it runs, so its greedy text varies from run to run in both versions: two 1.1.9 servers side by side gave the
+same text on 0 of 12 prompts, as did two 1.2.0 servers, and those same-version pairs measured 0.993× and 1.014× against
+each other, the spread of a 36-pair row. These runs shared the Mac with other work, so the tok/s are below the
+2026-11-10 table; compare the ratios.
+
+### Start times, Pulsar 1.2.0
+
+Seconds from the serve command to ready on the same M5 Max (2026-11-24), from the release download in a new folder,
+with Pulsar's GPU kernel cache empty at the start. A model's first start prepares Pulsar's GPU kernels for this Mac
+and macOS version; later starts read them back.
+
+| Start | Ready in |
+|---|---:|
+| Inkling 2 Mini, first start, with its 17.3 GB download and 0.6 GB draft (kernels prepared in 192 s) | 498 s |
+| Inkling 2 Mini, next start | 8 s |
+| Qwen3.6-35B-A3B, first start (model downloaded before) | 175 s |
+| Inkling 2 Mini after Qwen3.6-35B-A3B | 9 s |
+| Qwen3.6-35B-A3B after Inkling 2 Mini | 8 s |
+| Qwen3.8-27B, first start (model downloaded before) | 120 s |
+| Qwen3.8-27B, next start | 20 s |
+
+In the same session, Inkling 2 Mini's first chat answer (688 tokens) ran at 95.3 tok/s with its first token after
+0.09 s, and its tool call returned `get_weather({"city":"Paris"})`.
 
 ### Pulsar 1.1.9 vs Pulsar 1.1.8
 

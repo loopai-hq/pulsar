@@ -1,7 +1,7 @@
 <!-- Modified by Pulsar. (Splash's original README is docs/SPLASH-README.md.) -->
 <h1 align="center">Pulsar</h1>
 
-<p align="center">Run Qwen3.8-27B and Qwen3.6-35B-A3B fast on your Mac.<br>
+<p align="center">The fastest inference engine for Qwen3.8-27B, Qwen3.6-35B-A3B and Inkling 2 Mini on Apple Silicon.<br>
 A fork of Inco AI's <a href="https://github.com/incoai/splash">Splash</a>, with faster GPU kernels and smarter drafting.</p>
 
 <p align="center">
@@ -26,17 +26,22 @@ Every token is still checked by the full model, so you get the model's own answe
 
 ## Quick start
 
-Download `pulsar-1.1.9-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
+Download `pulsar-1.2.0-macos-arm64.tar.gz` from [Releases](https://github.com/loopai-hq/pulsar/releases/latest), then:
 
 ```bash
-tar -xzf pulsar-1.1.9-macos-arm64.tar.gz && cd pulsar
+tar -xzf pulsar-1.2.0-macos-arm64.tar.gz && cd pulsar
 ./pulsar serve --model mlx-community/Qwen3.8-27B-4bit
 ```
 
 Open <http://127.0.0.1:8000> to chat. The first run downloads the model (20 GB) and spends about 20 seconds
-setting up Python. The server speaks the OpenAI and Anthropic APIs, so most apps can use it as is.
+setting up Python. Each model's first start also prepares Pulsar's GPU kernels for your Mac, once; later starts are
+ready in seconds. The server speaks the OpenAI and Anthropic APIs, so most apps can use it as is.
 
 - **Qwen3.6-35B-A3B:** `./pulsar serve --model mlx-community/Qwen3.6-35B-A3B-4bit` (21 GB)
+- **Inkling 2 Mini:** `SPLASH_PROMPT_LOOKUP=1 ./pulsar serve --model mlx-community/Inkling-2-Mini-4bit` (17 GB).
+  Pulsar also fetches its draft, the 0.6 GB `mtp.safetensors` of
+  [thinkingmachines/Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini), and serves the model's
+  text. `SPLASH_PROMPT_LOOKUP=1` lets it take guesses straight from your prompt, as in the measurements below.
 - **24 GB Mac:** run `sudo sysctl iogpu.wired_limit_mb=20480` once (it lasts until a restart), and put
   `SPLASH_TEXT_ONLY=1` in front of the serve command.
 - **Downloaded with a browser or AirDrop:** run `/usr/bin/xattr -dr com.apple.quarantine .` in the `pulsar` folder first.
@@ -76,24 +81,32 @@ weights per step against Pulsar's 14.4 GB.
 On Qwen3.6-35B-A3B, a mixture-of-experts model that only uses a few small blocks per token, Pulsar 1.1.9 writes
 **326 tok/s** on average across 12 prompts (greedy, 2026-11-10; 1.1.8 in the same session: 306).
 
+On Inkling 2 Mini, Pulsar 1.2.0 writes code **1.27×** as fast as MTPLX 2.13.1 (104.3 against 81.9 tok/s) and chats at
+68.0 against 66.7 tok/s (2026-11-24, one session taking turns on the same prompts, MTPLX with its own 4-bit Inkling
+pack).
+
 Every session, prompt and setting: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
-## What's new in 1.1.9
+## What's new in 1.2.0
 
-Pulsar now runs on the Splash 1.6.0 engine, and both models write faster while using less GPU energy per token.
-Measured against 1.1.8 on the same M5 Max, taking turns on the same 12 prompts with 6 seeds each (2026-11-10):
+Pulsar now runs [Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini), drafting with the
+`mtp.safetensors` draft of its official release. Measured against MTPLX 2.13.1 on the same M5 Max, one session taking
+turns on the same prompts (2026-11-24):
 
-| | 1.1.8 | 1.1.9 | |
+| Inkling 2 Mini | MTPLX 2.13.1 | Pulsar 1.2.0 | |
 |---|---:|---:|---|
-| Qwen3.6-35B-A3B, sampled | 273.7 tok/s | 309.5 tok/s | **12.6% faster** |
-| Qwen3.6-35B-A3B, greedy | 305.6 tok/s | 326.3 tok/s | **6.8% faster** |
-| Qwen3.8-27B, sampled | 101.4 tok/s | 104.1 tok/s | **2.6% faster** |
-| Qwen3.8-27B, greedy | 108.9 tok/s | 112.0 tok/s | **2.8% faster** |
-| Qwen3.6-35B-A3B, GPU energy per token (sampled) | 0.138 J | 0.121 J | **12% less** |
+| Writing code, 3 prompts | 81.9 tok/s | 104.3 tok/s | **1.27×** |
+| Chat, 2 prompts | 66.7 tok/s | 68.0 tok/s | **1.02×** |
 
-Upgrading from 1.1.8: 1.1.9 serves the standard MLX 4-bit models (`mlx-community/Qwen3.8-27B-4bit`,
-`mlx-community/Qwen3.6-35B-A3B-4bit`), so the first run downloads the model again; the old `incoai/...-Splash`
-download can be deleted. The guesser token list now loads by itself.
+Qwen3.8-27B and Qwen3.6-35B-A3B keep 1.1.9's speed. Side by side with 1.1.9 on the same 12 prompts (2026-11-24):
+Qwen3.8-27B 1.002× sampled and 0.999× greedy, with greedy answers identical to 1.1.9's; Qwen3.6-35B-A3B 1.009× sampled
+and 0.993× greedy.
+
+A model's first start prepares Pulsar's GPU kernels for your Mac, once: on an M5 Max, Qwen3.8-27B was ready in 120 s,
+Qwen3.6-35B-A3B in 175 s, and Inkling 2 Mini in 498 s including its 17 GB download. Later starts are ready in 8 to
+20 s, and switching between Inkling 2 Mini and Qwen3.6-35B-A3B takes 8 to 9 s.
+
+Upgrading from 1.1.9: the same models and commands; the first start after the upgrade prepares the kernels once.
 Older releases: [Releases](https://github.com/loopai-hq/pulsar/releases).
 
 ## How it works
@@ -145,7 +158,7 @@ in 25.1 s (120 tok/s). <a href="docs/media/lithos-tip.mp4">Video</a></sub></p>
 | Mac | Apple silicon, M3 or newer (tested on M5 Max and M5 Pro) |
 | macOS | 26.4 or later |
 | Memory | 24 GB or more for Qwen3.8-27B |
-| Disk | 17.4 GB for Qwen3.8-27B, 20.9 GB for Qwen3.6-35B-A3B |
+| Disk | 17.4 GB for Qwen3.8-27B, 20.9 GB for Qwen3.6-35B-A3B, 17.3 GB for Inkling 2 Mini plus its 0.6 GB draft |
 | Python | 3.12 to 3.14 |
 
 ## Build from source
@@ -165,6 +178,8 @@ SPLASH_DRAFT_HEAD_IDS=$PWD/data/head-ranked.u32 ./pulsar serve --model incoai/Qw
 - [loopai-hq/Qwen3.6-35B-A3B-Pulsar](https://huggingface.co/loopai-hq/Qwen3.6-35B-A3B-Pulsar)
 
 They carry Inco AI's Splash model packages unchanged, with full credit, plus Pulsar's draft token list for Qwen3.8-27B.
+Inkling 2 Mini runs [mlx-community/Inkling-2-Mini-4bit](https://huggingface.co/mlx-community/Inkling-2-Mini-4bit) with
+the draft from [thinkingmachines/Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini).
 
 ## Credits and license
 
@@ -173,8 +188,9 @@ THIRD_PARTY_NOTICES. If you build on Pulsar, keep the NOTICE file and credit Pul
 version 1.1.3.
 
 Thank you to [Inco AI](https://github.com/incoai) for [Splash](https://github.com/incoai/splash), the engine Pulsar is
-built on (1.1.9 is built on Splash 1.6.0), and for the DFlash 2 draft models and model packages Pulsar runs; to the
-Qwen team for the models; and to mlx-community for the 4-bit conversions. Splash's own README is
+built on (1.2.0 is built on Splash 1.6.0), and for the DFlash 2 draft models and model packages Pulsar runs; to the
+Qwen team for the Qwen models; to [thinkingmachines](https://huggingface.co/thinkingmachines) for Inkling 2 Mini and
+its draft; and to mlx-community for the 4-bit conversions. Splash's own README is
 [docs/SPLASH-README.md](docs/SPLASH-README.md). Third-party code keeps its own license
 ([THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES)). Files changed from Splash say "Modified by Pulsar."; the full list is in
 [docs/CHANGED-FILES.md](docs/CHANGED-FILES.md).
